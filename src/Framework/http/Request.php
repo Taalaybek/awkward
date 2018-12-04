@@ -5,14 +5,10 @@ class Request
 {
   function getQueryParams(): array
   {
-    if (isset($_GET)) {
       return $_GET;
-    }
   }
-  function getCookies(): array
+  function getParsedBody(): array
   {
-    if (isset($_COOKIE)) {
-      return $_COOKIE;
-    }
+      return $_POST;
   }
 }
