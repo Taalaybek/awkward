@@ -9,6 +9,6 @@ class Request
   }
   function getParsedBody(): array
   {
-      return $_POST;
+      return $_POST ?: null;
   }
 }
