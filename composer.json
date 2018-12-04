@@ -1,0 +1,17 @@
+{
+  "description": "psr-7 example framework",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alex",
+      "email": "alex.bowey@yahoo.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.2.8"
+  },
+  "scripts": {
+    "serv": "php -S localhost:8000 -t public"
+  }
+}
