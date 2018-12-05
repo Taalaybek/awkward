@@ -1,8 +1,8 @@
 <?php
-use Framework\Http\Request;
-
 chdir(dirname(__DIR__));
-require_once "src/Framework/http/Request.php";
+require_once "./vendor/autoload.php";
+
+use Framework\Http\Request;
 
 ### Initialization
 
