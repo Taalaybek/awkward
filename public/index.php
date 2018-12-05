@@ -2,11 +2,11 @@
 chdir(dirname(__DIR__));
 require_once "./vendor/autoload.php";
 
-use Framework\Http\Request;
+use Framework\Http\RequestFactory;
 
 ### Initialization
 
-$request = new Request($_GET, $_POST);
+$request = RequestFactory::fromGlobals();
 
 ### Action
 
