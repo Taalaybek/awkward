@@ -17,7 +17,8 @@
     "roave/security-advisories": "dev-master"
   },
   "scripts": {
-    "serv": "php -S localhost:8000 -t public"
+    "serv": "php -S localhost:8000 -t public",
+    "phpunit": ".\\vendor\\bin\\phpunit.bat"
   },
   "autoload": {
     "psr-4": {
