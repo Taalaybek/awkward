@@ -24,5 +24,12 @@ class RequestTest extends TestCase
         $request = new Request();
         $this->assertEquals($data, $request->getQueryParams());
     }
-}
 
+    public function getParsedBdoy()
+    {
+        $_GET = [];
+        $_POST = $data = ['title' => 'Title'];
+        $request = new Request();
+        $this->assertEquals($data, $request->getParsedBdoy());
+    }
+}
