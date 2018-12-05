@@ -8,8 +8,6 @@ class RequestTest extends TestCase
 {
     public function testEmpty()
     {
-        $_GET = [];
-        $_POST = [];
         $request = new Request();
         $this->assertEquals([], $request->getQueryParams());
         $this->assertNull($request->getParsedBody());
@@ -17,19 +15,18 @@ class RequestTest extends TestCase
 
     public function testGetQueryParams()
     {
-        $_GET = $data = [
-            'name' => 'Alex'
-        ];
-        $_POST = [];
-        $request = new Request();
+        
+        $request = new Request(
+            $data = [ 'name' => 'Alex' ]
+        );
         $this->assertEquals($data, $request->getQueryParams());
     }
 
     public function getParsedBdoy()
     {
-        $_GET = [];
-        $_POST = $data = ['title' => 'Title'];
-        $request = new Request();
+        $request = new Request(
+            $data = ['title' => 'Title']
+        );
         $this->assertEquals($data, $request->getParsedBdoy());
     }
 }
