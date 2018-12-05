@@ -8,10 +8,19 @@
       "email": "alex.bowey@yahoo.com"
     }
   ],
+  "config": {
+    "sort-packages": true
+  },
   "require": {
-    "php": ">=7.2.8"
+    "php": ">=7.2.8",
+    "roave/security-advisories": "dev-master"
   },
   "scripts": {
     "serv": "php -S localhost:8000 -t public"
+  },
+  "autoload": {
+    "psr-4": {
+      "Framework\\": "src/Framework/"
+    }
   }
 }
