@@ -6,7 +6,7 @@ use Framework\Http\Request;
 
 ### Initialization
 
-$request = new Request();
+$request = new Request($_GET, $_POST);
 
 ### Action
 
