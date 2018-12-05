@@ -3,30 +3,18 @@ namespace Tests\Framework\Http;
 
 use Framework\Http\Request;
 use PHPUnit\Framework\TestCase;
+use Framework\Http\RequestFactory;
 
 class RequestTest extends TestCase
 {
     public function testEmpty()
     {
-        $request = new Request();
-        $this->assertEquals([], $request->getQueryParams());
-        $this->assertNull($request->getParsedBody());
-    }
-
-    public function testGetQueryParams()
-    {
-        
-        $request = new Request(
-            $data = [ 'name' => 'Alex' ]
+        $request = RequestFactory::fromGlobals(
+            $queryParams = [ 'name' => 'Alex' ],
+            $parsedBody = ['title' => 'Title']
         );
-        $this->assertEquals($data, $request->getQueryParams());
-    }
-
-    public function getParsedBdoy()
-    {
-        $request = new Request(
-            $data = ['title' => 'Title']
-        );
-        $this->assertEquals($data, $request->getParsedBdoy());
+        $this->assertInstanceOf(Request::class, $request);
+        $this->assertEquals($queryParams, $request->getQueryParams());
+        $this->assertEquals($parsedBody, $request->getParsedBody());
     }
 }
