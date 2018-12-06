@@ -1,20 +1,30 @@
 <?php
 namespace Tests\Framework\Http;
 
-use Framework\Http\Request;
 use PHPUnit\Framework\TestCase;
-use Framework\Http\RequestFactory;
+use Zend\Diactoros\ServerRequest as Request;
 
 class RequestTest extends TestCase
 {
     public function testEmpty()
     {
-        $request = RequestFactory::fromGlobals(
-            $queryParams = [ 'name' => 'Alex' ],
-            $parsedBody = ['title' => 'Title']
-        );
-        $this->assertInstanceOf(Request::class, $request);
-        $this->assertEquals($queryParams, $request->getQueryParams());
-        $this->assertEquals($parsedBody, $request->getParsedBody());
+        $request = new Request();
+        self::assertEquals([], $request->getQueryParams());
+        self::assertNull($request->getParsedBody());
+    }
+  
+    public function testQueryParams()
+    {
+      $request = (new Request())
+        ->withQueryParams($name = ['name' => 'Alex']);
+      self::assertEquals($name, $request->getQueryParams());
+      self::assertNull($request->getParsedBody());
+    }
+    
+    public function testParsedBody()
+    {
+      $request = (new Request())
+        ->withParsedBody($data = ['title' => 'Title']);
+      self::assertEquals($data, $request->getParsedBody());
     }
 }
