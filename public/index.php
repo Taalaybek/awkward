@@ -1,24 +1,23 @@
 <?php
-chdir(dirname(__DIR__));
-require_once "./vendor/autoload.php";
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\ServerRequestFactory as Request;
 
-use Framework\Http\Response;
-use Framework\Http\RequestFactory;
+chdir(dirname(__DIR__));
+require_once "vendor/autoload.php";
 
 ### Initialization
-
-$request = RequestFactory::fromGlobals();
+$request = Request::fromGlobals();
 
 ### Action
 
 $name = $request->getQueryParams()['name'] ?? 'Guest';
 
-$response = (new Response('Hello, ' . $name . ' '))
-    ->setHeader('X-Developer', 'Alex');
+$response = (new HtmlResponse('Hello, ' . $name . ' '))
+    ->withHeader('X-Developer', 'Alex');
 
 header('HTTP/1.0 ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase());
 foreach ($response->getHeaders() as $key => $value) {
-    header($key . ':' . $value);
+    header($key . ':' . implode(', ', $value));
 }
 
-echo 'Hello, ' . $name;
+echo $response->getBody();
