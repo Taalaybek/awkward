@@ -3,8 +3,8 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Framework\Http\ResponseSender as RSender;
 use Zend\Diactoros\ServerRequestFactory as Request;
 
-//chdir(dirname(__DIR__));
-require_once '../vendor/autoload.php';
+chdir(dirname(__DIR__));
+require_once 'vendor/autoload.php';
 
 ### Initialization
 $request = Request::fromGlobals();
