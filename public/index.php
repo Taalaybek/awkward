@@ -13,8 +13,11 @@ $request = Request::fromGlobals();
 ### Action
 
 $name = $request->getQueryParams()['name'] ?? 'Guest';
+$response = new HtmlResponse('Hello, ' . $name . '!');
 
-$response = (new HtmlResponse('Hello, ' . $name . '!'))->withHeader('X-Developer', 'Alex');
+### Postprocessing
+
+$response = $response->withHeader('X-Developer', 'Alex');
 
 ### Sending
 $send = new SapiEmitter();
