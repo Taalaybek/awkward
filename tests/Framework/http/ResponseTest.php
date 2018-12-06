@@ -1,8 +1,9 @@
 <?php
 namespace Tests\Framework\Http;
 
-use Framework\Http\Response;
 use PHPUnit\Framework\TestCase;
+use Zend\Diactoros\Response;
+use Zend\Diactoros\Response\HtmlResponse as Html;
 
 /**
  * ResponseTest
@@ -12,29 +13,28 @@ class ResponseTest extends TestCase
     /** @test */
     public function test_empty(): void
     {
-        $response = new Response($body = 'Body');
+        $response = new Html($body = 'Body');
 
-        $this->assertEquals($body, $response->getBody());
+        $this->assertEquals($body, $response->getBody()->getContents());
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('OK', $response->getReasonPhrase());
     }
 
     public function test_404(): void
     {
-        $response = new Response($body='Body', $status=404);
-        $this->assertEquals($body, $response->getBody());
+        $response = new Html($body='Body', $status=404);
+        $this->assertEquals($body, $response->getBody()->getContents());
         $this->assertEquals(404, $response->getStatusCode());
-        $this->assertEquals('Not Found', $response->getReasonPhrase());
+        $this->assertEquals(mb_strlen($body), $response->getBody()->getSize());
     }
 
     public function test_headers(): void
     {
-        $response = (new Response(''))
-            ->setHeader($header = 'X-Header', $value = 'Alex')
-            ->setHeader($header1 = 'X-Header1', $value1 = 'Vladimir');
-        
+        $response = (new Response())
+            ->withHeader($header = 'X-Header', $value = 'Alex')
+            ->withHeader($header1 = 'X-Header1', $value1 = 'Vladimir');
+
         $this->assertEquals(
-            [$header => $value, $header1 => $value1], 
+            [$header => [$value], $header1 => [$value1]],
             $response->getHeaders()
         );
     }
