@@ -1,5 +1,5 @@
 <?php
-use Framework\Http\Router\Router;
+use Framework\Http\Router\RegexRoute;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\JsonResponse;
@@ -58,7 +58,7 @@ $routes->get(
   ['id' => '\d+']
 );
 
-$router = new Router($routes);
+$router = new \Framework\Http\Router\Router($routes);
 $request = ServerRequestFactory::fromGlobals();
 
 try {
