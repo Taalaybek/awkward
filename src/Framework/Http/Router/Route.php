@@ -3,11 +3,11 @@ namespace Framework\Http\Router;
 
 class Route
 {
-  private $name;
-  private $pattern;
-  private $handler;
-  private $methods;
-  private $tokens;
+  public $name;
+  public $pattern;
+  public $handler;
+  public $methods;
+  public $tokens;
   
   public function __construct($name, $pattern, $handler, array $methods, array $tokens = [])
   {
