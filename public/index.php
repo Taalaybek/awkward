@@ -1,5 +1,7 @@
 <?php
 use App\Http\Action;
+use Framework\Http\Router\ActionResolver;
+use Framework\Http\Router\SimpleRouter;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\HtmlResponse;
 use Framework\Http\Router\RouteCollection;
@@ -20,9 +22,10 @@ $routes->get( 'about', '/about', Action\AboutAction::class);
 $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 $routes->get('blog_show', '/blog/{id}', Action\Blog\BlogShowAction::class, ['id' => '\d+']);
 
-$router = new \Framework\Http\Router\Router($routes);
+$router = new SimpleRouter($routes);
 $request = ServerRequestFactory::fromGlobals();
-$resolver = new \Framework\Http\Router\ActionResolver();
+
+$resolver = new ActionResolver();
 
 try {
   $result = $router->match($request);
