@@ -22,6 +22,7 @@ $routes->get('blog_show', '/blog/{id}', Action\Blog\BlogShowAction::class, ['id'
 
 $router = new \Framework\Http\Router\Router($routes);
 $request = ServerRequestFactory::fromGlobals();
+$resolver = new \Framework\Http\Router\ActionResolver();
 
 try {
   $result = $router->match($request);
@@ -31,7 +32,7 @@ try {
   }
   
   $handler = $result->getHandler();
-  $action = is_string($handler) ? new $handler(): $handler;
+  $action = $resolver->handler($handler);
   $response = $action($request);
 } catch (RequestNotMatchedException $e) {
   $response = new HtmlResponse('Undefined page', 404);
