@@ -1,11 +1,14 @@
 <?php
 namespace Tests\Framework\Http;
-use Framework\Http\Router\Exception\RequestNotMatchedException;
-use Framework\Http\Router\RouteCollection;
-use Framework\Http\Router\Router;
+
+use Zend\Diactoros\Uri;
 use PHPUnit\Framework\TestCase;
 use Zend\Diactoros\ServerRequest;
-use Zend\Diactoros\Uri;
+use Psr\Http\Message\RequestInterface;
+use Framework\Http\Router\SimpleRouter;
+use Framework\Http\Router\RouteCollection;
+use Framework\Http\Router\Exception\RequestNotMatchedException;
+
 class RouterTest extends TestCase
 {
   public function testCorrectMethod()
@@ -13,7 +16,7 @@ class RouterTest extends TestCase
     $routes = new RouteCollection();
     $routes->get($nameGet = 'blog', '/blog', $handlerGet = 'handler_get');
     $routes->post($namePost = 'blog_edit', '/blog', $handlerPost = 'handler_post');
-    $router = new Router($routes);
+    $router = new SimpleRouter($routes);
     $result = $router->match($this->buildRequest('GET', '/blog'));
     self::assertEquals($nameGet, $result->getName());
     self::assertEquals($handlerGet, $result->getHandler());
@@ -25,7 +28,7 @@ class RouterTest extends TestCase
   {
     $routes = new RouteCollection();
     $routes->post('blog', '/blog', 'handler_post');
-    $router = new Router($routes);
+    $router = new SimpleRouter($routes);
     $this->expectException(RequestNotMatchedException::class);
     $router->match($this->buildRequest('DELETE', '/blog'));
   }
@@ -33,7 +36,7 @@ class RouterTest extends TestCase
   {
     $routes = new RouteCollection();
     $routes->get($name = 'blog_show', '/blog/{id}', 'handler', ['id' => '\d+']);
-    $router = new Router($routes);
+    $router = new SimpleRouter($routes);
     $result = $router->match($this->buildRequest('GET', '/blog/5'));
     self::assertEquals($name, $result->getName());
     self::assertEquals(['id' => '5'], $result->getAttributes());
@@ -42,7 +45,7 @@ class RouterTest extends TestCase
   {
     $routes = new RouteCollection();
     $routes->get($name = 'blog_show', '/blog/{id}', 'handler', ['id' => '\d+']);
-    $router = new Router($routes);
+    $router = new SimpleRouter($routes);
     $this->expectException(RequestNotMatchedException::class);
     $router->match($this->buildRequest('GET', '/blog/slug'));
   }
@@ -51,7 +54,7 @@ class RouterTest extends TestCase
     $routes = new RouteCollection();
     $routes->get('blog', '/blog', 'handler');
     $routes->get('blog_show', '/blog/{id}', 'handler', ['id' => '\d+']);
-    $router = new Router($routes);
+    $router = new SimpleRouter($routes);
     self::assertEquals('/blog', $router->generate('blog'));
     self::assertEquals('/blog/5', $router->generate('blog_show', ['id' => 5]));
   }
@@ -59,11 +62,11 @@ class RouterTest extends TestCase
   {
     $routes = new RouteCollection();
     $routes->get($name = 'blog_show', '/blog/{id}', 'handler', ['id' => '\d+']);
-    $router = new Router($routes);
+    $router = new SimpleRouter($routes);
     $this->expectException(\InvalidArgumentException::class);
     $router->generate('blog_show', ['slug' => 'post']);
   }
-  private function buildRequest($method, $uri): ServerRequest
+  private function buildRequest($method, $uri): RequestInterface
   {
     return (new ServerRequest())
       ->withMethod($method)
