@@ -1,7 +1,7 @@
 <?php
 use App\Http\Action;
 use Aura\Router\RouterContainer;
-use Framework\Http\Router\ActionResolver;
+use Framework\Http\ActionResolver;
 use Framework\Http\Router\AuraAdapterRouter;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\HtmlResponse;
