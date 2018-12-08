@@ -13,7 +13,7 @@ interface Router
    * @throws RequestNotMatchedException
    * @return Result|null
    */
-  public function match(ServerRequestInterface $request): ?Result;
+  public function match(ServerRequestInterface $request): Result;
   
   
   /**
@@ -22,5 +22,5 @@ interface Router
    * @throws RouteNotFoundException;
    * @return null|string
    */
-  public function generate($name, array $params = []): ?string;
+  public function generate($name, array $params = []): string;
 }
