@@ -1,9 +1,6 @@
 <?php
-use App\Http\Action\HelloAction;
-use App\Http\Action\AboutAction;
-use App\Http\Action\Blog\IndexAction;
+use App\Http\Action;
 use Zend\Diactoros\ServerRequestFactory;
-use App\Http\Action\Blog\BlogShowAction;
 use Zend\Diactoros\Response\HtmlResponse;
 use Framework\Http\Router\RouteCollection;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
@@ -18,14 +15,13 @@ $routes = new RouteCollection();
 
 ### Action
 
-$routes->get('home', '/', new HelloAction());
+$routes->get('home', '/', Action\HelloAction::class);
 
-$routes->get( 'about', '/about', new AboutAction());
+$routes->get( 'about', '/about', Action\AboutAction::class);
 
-$routes->get('blog', '/blog', new IndexAction());
+$routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 
-$routes->get('blog_show', '/blog/{id}', new BlogShowAction(), ['id' => '\d+']
-);
+$routes->get('blog_show', '/blog/{id}', Action\Blog\BlogShowAction::class, ['id' => '\d+']);
 
 $router = new \Framework\Http\Router\Router($routes);
 $request = ServerRequestFactory::fromGlobals();
@@ -37,7 +33,8 @@ try {
     $request = $request->withAttribute($attribute, $value);
   }
   
-  $action = $result->getHandler();
+  $handler = $result->getHandler();
+  $action = is_string($handler) ? new $handler(): $handler;
   $response = $action($request);
 } catch (RequestNotMatchedException $e) {
   $response = new HtmlResponse('Undefined page', 404);
