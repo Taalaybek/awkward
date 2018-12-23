@@ -1,10 +1,12 @@
 <?php
 use App\Http\Action;
+use App\Http\Middleware;
 use Aura\Router\RouterContainer;
 use Framework\Http\ActionResolver;
-use Framework\Http\Router\AuraAdapterRouter;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\HtmlResponse;
+use Framework\Http\Router\AuraAdapterRouter;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
 
@@ -23,9 +25,18 @@ $params = [
 
 $routes->get('home', '/', Action\HelloAction::class);
 $routes->get( 'about', '/about', Action\AboutAction::class);
+
 $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 $routes->get('blog_show', '/blog/{id}', Action\Blog\BlogShowAction::class)->tokens(['id' => '\d+']);
-$routes->get('cabinet', '/cabinet', new Action\CabinetAction($params['users']));
+
+$routes->get('cabinet', '/cabinet', function(ServerRequestInterface $request) use ($params){
+  $auth = new Middleware\BasicAuthMiddleware($params['users']);
+  $cabinet = new Action\CabinetAction();
+  
+  return $auth($request, function (ServerRequestInterface $request) use ($cabinet) {
+    return $cabinet($request);
+  });
+});
 
 $router = new AuraAdapterRouter($aura);
 $request = ServerRequestFactory::fromGlobals();
