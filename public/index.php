@@ -30,12 +30,15 @@ $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 $routes->get('blog_show', '/blog/{id}', Action\Blog\BlogShowAction::class)->tokens(['id' => '\d+']);
 
 $routes->get('cabinet', '/cabinet', function(ServerRequestInterface $request) use ($params){
+  $profiler = new Middleware\ProfilerMiddleware();
   $auth = new Middleware\BasicAuthMiddleware($params['users']);
   $cabinet = new Action\CabinetAction();
-  
-  return $auth($request, function (ServerRequestInterface $request) use ($cabinet) {
-    return $cabinet($request);
+  return $profiler($request, function() use ($auth, $cabinet, $request){
+    return $auth($request, function (ServerRequestInterface $request) use ($cabinet) {
+      return $cabinet($request);
+    });
   });
+  
 });
 
 $router = new AuraAdapterRouter($aura);
