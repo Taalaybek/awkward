@@ -1,9 +1,9 @@
 <?php
 namespace Framework\Http;
 
-final class ActionResolver
+final class MiddleResolver
 {
-  public final function handler($handler)
+  public final function resolve($handler)
   {
     return is_string($handler) ? new $handler(): $handler;
   }
