@@ -3,6 +3,7 @@ use App\Http\Action;
 use App\Http\Middleware;
 use Aura\Router\RouterContainer;
 use Framework\Http\ActionResolver;
+use Framework\Pipeline\Pipeline;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -30,14 +31,24 @@ $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 $routes->get('blog_show', '/blog/{id}', Action\Blog\BlogShowAction::class)->tokens(['id' => '\d+']);
 
 $routes->get('cabinet', '/cabinet', function(ServerRequestInterface $request) use ($params){
-  $profiler = new Middleware\ProfilerMiddleware();
-  $auth = new Middleware\BasicAuthMiddleware($params['users']);
-  $cabinet = new Action\CabinetAction();
-  return $profiler($request, function() use ($auth, $cabinet, $request){
-    return $auth($request, function (ServerRequestInterface $request) use ($cabinet) {
-      return $cabinet($request);
-    });
+  
+  $pipeline = new Pipeline();
+  $pipeline->pipe(new Middleware\ProfilerMiddleware());
+  $pipeline->pipe(new Middleware\BasicAuthMiddleware($params['users']));
+  $pipeline->pipe(new Action\CabinetAction());
+  
+  return $pipeline($request, function ()  {
+    return new HtmlResponse('Undefined page', 404);
   });
+//  $profiler = new Middleware\ProfilerMiddleware();
+//  $auth = new Middleware\BasicAuthMiddleware($params['users']);
+//  $cabinet = new Action\CabinetAction();
+//
+//  return $profiler($request, function() use ($auth, $cabinet, $request){
+//    return $auth($request, function (ServerRequestInterface $request) use ($cabinet) {
+//      return $cabinet($request);
+//    });
+//  });
   
 });
 
