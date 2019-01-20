@@ -29,7 +29,6 @@ $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 $routes->get('blog_show', '/blog/{id}', Action\Blog\BlogShowAction::class)->tokens(['id' => '\d+']);
 
 $routes->get('cabinet', '/cabinet', [
-  Middleware\ProfilerMiddleware::class,
   new Middleware\BasicAuthMiddleware($params['users']),
   Action\CabinetAction::class
 ]);
@@ -48,6 +47,7 @@ try {
   
   $handlers = $result->getHandler();
   $pipeline = new Pipeline();
+  $pipeline->pipe($resolver->resolve(Middleware\ProfilerMiddleware::class));
   
   foreach (is_array($handlers) ? $handlers : [$handlers] as $handler) {
     $pipeline->pipe($resolver->resolve($handler));
